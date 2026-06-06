@@ -56,8 +56,8 @@ async def run_scan_job(job_id: str, github_url: str):
     target_dir = tempfile.mkdtemp(prefix="sqa_clone_")
     
     try:
-        print(f"[{job_id}] Cloning {github_url} into {target_dir}...")
-        Repo.clone_from(github_url, target_dir)
+        print(f"[{job_id}] Cloning {github_url} into {target_dir} (shallow clone)...")
+        Repo.clone_from(github_url, target_dir, depth=1)
         
         async with aiosqlite.connect(DB_PATH) as db:
             await db.execute("UPDATE jobs SET target_dir = ? WHERE id = ?", (target_dir, job_id))

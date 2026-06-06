@@ -13,7 +13,6 @@ class RegressionTestingAgent(BaseSQAAgent):
         print("  - Initializing isolated Docker sandbox for testing...")
         
         with Sandbox(target_dir) as sandbox:
-            sandbox.run_command("pip install pytest coverage")
             
             print("  - Executing test suite...")
             result = sandbox.run_command("coverage run -m pytest")
