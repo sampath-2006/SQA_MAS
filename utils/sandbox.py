@@ -16,16 +16,17 @@ class Sandbox:
     def __enter__(self):
         print(f"Setting up Docker sandbox '{self.container_name}'...")
         
-        # Pull image if not exists
+        # Build image if not exists
         try:
-            self.client.images.get("python:3.11-slim")
+            self.client.images.get("sqa-sandbox-base:latest")
         except docker.errors.ImageNotFound:
-            print("  - Pulling python:3.11-slim image (this might take a moment)...")
-            self.client.images.pull("python:3.11-slim")
+            print("  - Building sqa-sandbox-base image (first run only, this will take ~10 seconds)...")
+            dockerfile_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+            self.client.images.build(path=dockerfile_dir, dockerfile="Dockerfile.sandbox", tag="sqa-sandbox-base:latest")
             
         # Start a persistent detached container
         self.container = self.client.containers.run(
-            "python:3.11-slim",
+            "sqa-sandbox-base:latest",
             command="sleep infinity",
             name=self.container_name,
             volumes={self.target_dir: {'bind': '/app', 'mode': 'rw'}},
