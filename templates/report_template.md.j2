@@ -1,0 +1,45 @@
+# SQA-MAS Quality Assurance Report
+**Target Repository:** `{{ target_dir }}`
+**Timestamp:** `{{ timestamp }}`
+**Overall Status:** `{{ status }}`
+
+---
+
+## 📊 Executive Summary
+
+* **Test Coverage:** `{{ metrics.get('test_coverage_pct', 'N/A') }}%`
+* **Average Cyclomatic Complexity:** `{{ "%.2f"|format(metrics.get('complexity_avg', 0)) }}`
+* **Quality Score (0-100):** `{{ quality_score }}`
+* **Release Readiness Status:** `{{ release_status }}`
+
+---
+
+## 🛑 Critical & High Issues
+{% if critical_issues %}
+{% for issue in critical_issues %}
+### [{{ issue.severity }}] {{ issue.description }}
+* **Agent:** `{{ issue.agent }}`
+* **File:** `{{ issue.file_path }}` {% if issue.line_number %}(Line {{ issue.line_number }}){% endif %}
+* **Impact:** {{ issue.impact_analysis }}
+* **Suggested Fix:** {{ issue.suggested_fix }}
+
+{% endfor %}
+{% else %}
+*No critical or high severity issues detected!* 🎉
+{% endif %}
+
+---
+
+## ⚠️ Medium & Low Issues
+{% if other_issues %}
+{% for issue in other_issues %}
+### [{{ issue.severity }}] {{ issue.description }}
+* **Agent:** `{{ issue.agent }}`
+* **File:** `{{ issue.file_path }}` {% if issue.line_number %}(Line {{ issue.line_number }}){% endif %}
+* **Impact:** {{ issue.impact_analysis }}
+* **Suggested Fix:** {{ issue.suggested_fix }}
+
+{% endfor %}
+{% else %}
+*No medium or low severity issues detected!*
+{% endif %}
